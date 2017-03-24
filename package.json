@@ -1,0 +1,18 @@
+{
+  "name": "nodejs-multi-get",
+  "version": "0.1.0",
+  "description": "nodejs-multi-get",
+  "main": "nodejs-multi-get.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "coding challenge",
+    "downloader",
+    "experimental"
+  ],
+  "author": "Stephen Legge",
+  "license": "MIT",
+  "readmeFilename": "README.md"
+}

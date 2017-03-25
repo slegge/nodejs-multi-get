@@ -2,9 +2,10 @@
   "name": "nodejs-multi-get",
   "version": "0.1.0",
   "description": "nodejs-multi-get",
-  "main": "nodejs-multi-get.js",
+  "main": "multi-get.js",
   "scripts": {
-    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+    "test": "node_modules/.bin/_mocha --recursive test",
+    "coverage": "node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha -- test/lib --recursive"
   },
   "repository": "",
   "keywords": [
@@ -14,5 +15,19 @@
   ],
   "author": "Stephen Legge",
   "license": "MIT",
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "valid-url": "^1.0.9",
+    "yargs": "^7.0.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "mocha-istanbul": "^0.3.0",
+    "sinon": "^2.1.0"
+  }
 }

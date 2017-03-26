@@ -28,6 +28,7 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var sinon = require('sinon');
 var Main = require('../../lib/main');
 
 describe('Main class', function() {
@@ -38,7 +39,8 @@ describe('Main class', function() {
             var main = new Main( { _: [ 'multi-get' ],
                   u: 'http://blah.com/x.zip',
                   url: 'http://blah.com/x.zip',
-                  count: 4
+                  count: 4,
+                  destination: 'dest.out'
             });
 
             expect(main.getUrl()).to.equal('http://blah.com/x.zip');
@@ -52,9 +54,9 @@ describe('Main class', function() {
         });
 
         it('all arguments need to be validated before starting to download', function() {
-            var main = new Main({url: 'http://test.com/url', count: 4});
+            var main = new Main({url: 'http://test.com/url', count: 4, destination: 'dest.out'});
 
-            expect(main.validArguments({url: 'http://test.com/url', count: 4})).to.equal(true);
+            expect(main.validArguments({url: 'http://test.com/url', count: 4, destination: 'dest.out'})).to.equal(true);
             expect(function() {new Main({})}).to.throw(Error);
             expect(function() {new Main()}).to.throw(Error);
             expect(function() {new Main({url: 'ftp://test.com/url'})}).to.throw(Error);
@@ -64,7 +66,7 @@ describe('Main class', function() {
         });
 
         it('the number of chunks to download should always be set and be a positive number ', function() {
-            var main = new Main({count: 4, url: 'http://test.com/url'});
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
 
             expect(main.getCount()).to.equal(4);
             expect(main.isValidCount(4)).to.equal(true);
@@ -74,5 +76,33 @@ describe('Main class', function() {
             expect(main.isValidCount('NaN')).to.equal(false);
             expect(main.isValidCount()).to.equal(false);
         });
+
+        it('the destination filename needs to be a valid local filename', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+
+            expect(main.getDestination()).to.equal('dest.out');
+            expect(main.isValidDestination('dest.out')).to.equal(true);
+            expect(main.isValidDestination('...')).to.equal(true);
+            expect(main.isValidDestination('')).to.equal(false);
+            expect(main.isValidDestination(null)).to.equal(false);
+            expect(main.isValidDestination('dir/dest.out')).to.equal(false);
+            expect(main.isValidDestination('./dest.out')).to.equal(false);
+            expect(main.isValidDestination('abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxy' +
+                    'zabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuv' +
+                    'wxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs' +
+                    'tuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz.out')).to.equal(false);
+        });
     });
+
+    context('Functions', function() {
+
+        it('main entry point for the downloader', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            
+            sinon.stub(main, 'getCount').returns(0);
+            
+            main.multiGet();
+        });
+    });
+
 });

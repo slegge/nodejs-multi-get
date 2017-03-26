@@ -28,11 +28,57 @@
 
 var chai = require('chai');
 var expect = chai.expect;
+var sinon = require('sinon');
 var Main = require('../../lib/main');
 var Download = require('../../lib/download');
 
 describe('Download class', function() {
 	
-	context('...', function() {
+	context('Download class callbacks', function() {
+	    
+        it('onRequestComplete callback with no error, no response', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            var download = new Download(main);
+
+            var callback = sinon.stub();
+            
+            download.onRequestComplete(undefined, undefined, undefined, callback);
+            expect(callback.called).to.equal(true);
+        });
+
+        it('onRequestComplete callback with error, no response', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            var download = new Download(main);
+
+            var callback = sinon.stub();
+            
+            download.onRequestComplete('error', undefined, undefined, callback);
+            expect(callback.called).to.equal(true);
+        });
+
+        it('onRequestComplete callback with response, no error', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            var download = new Download(main);
+
+            var response = {
+                statusCode: 206,
+                req: {
+                    _headers: {
+                        'x-part': 5
+                    }
+                }
+            };
+            var callback = sinon.stub();
+            
+            download.onRequestComplete(undefined, response, undefined, callback);
+            expect(callback.called).to.equal(true);
+        });
+        
+        it('onAsyncComplete callback with error', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            var download = new Download(main);
+
+            expect(function() {download.onAsyncComplete('error')}).to.throw(Error);
+        });
     });
 });

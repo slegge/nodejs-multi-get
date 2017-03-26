@@ -34,22 +34,27 @@ var yargs = require('yargs')
     .example('$0 multi-get --url <url>', 'Get multiple blocks of the given url')
 
     .alias('u', 'url')
-    .default('u', 'http://f39bf6aa.bwtest-aws.pravala.com/384MB.jar')
     .nargs('u', 1)
-    .describe('u', 'get a url')
+    .describe('u', 'url of a file to download from')
 
     .alias('c', 'count')
     .default('c', 4)
     .nargs('c', 1)
     .describe('c', 'number of blocks to download')
 
-    // .demandOption(['u'])
+    .alias('d', 'destination')
+    .default('d', 'multi-get.dest')
+    .nargs('d', 1)
+    .describe('d', 'destination filename')
+    
+    .demandOption(['u'])
     .help('h')
     .alias('h', 'help')
     .epilog('Copyright Stephen Legge 2017');
 
 function runMain(args) {
     var main = new Main(args);
+    main.multiGet();
 }
 
 var argv = yargs.argv;

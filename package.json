@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "fs": "0.0.1-security",
+    "lodash": "^4.17.4",
     "request": "^2.81.0",
     "valid-url": "^1.0.9",
     "yargs": "^7.0.2"

@@ -30,7 +30,7 @@ Examples:
 Copyright Stephen Legge 2017
 ```
 
-## Reuirements
+## Requirements
 
 node and npm
 

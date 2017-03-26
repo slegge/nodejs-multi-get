@@ -29,6 +29,7 @@
 var chai = require('chai');
 var expect = chai.expect;
 var sinon = require('sinon');
+var nock = require('nock');
 var Main = require('../../lib/main');
 var Download = require('../../lib/download');
 
@@ -79,6 +80,40 @@ describe('Download class', function() {
             var download = new Download(main);
 
             expect(function() {download.onAsyncComplete('error')}).to.throw(Error);
+        });
+
+        it('onAsyncComplete callback no error', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            var download = new Download(main);
+
+            download.onAsyncComplete();
+        });
+
+        it('onAsyncComplete callback integration test', function() {
+            var main = new Main({count: 4, url: 'http://f39bf6aa.bwtest-aws.pravala.com/384MB.jar', destination: 'dest.out'});
+            var download = new Download(main);
+
+            var callbackStub = sinon.stub();
+            var onRequestCompleteStub = sinon.stub(download, 'onRequestComplete').callsFake(function(error, response, body, callback) {
+                callback();
+            });
+
+            nock('http://f39bf6aa.bwtest-aws.pravala.com')
+                .filteringPath(function(path){
+                    return '/';
+                 })
+                .get('/').times(4).reply(206, "OK");
+
+            download.start();
+            // TODO: Verify nock
+        });
+
+        it('onAsyncComplete destination error', function() {
+            var main = new Main({count: 4, url: 'http://f39bf6aa.bwtest-aws.pravala.com/384MB.jar', destination: 'dest.out'});
+            var download = new Download(main);
+
+            // TODO: moca/chai unable to catch this Error?
+            download.onAsyncComplete(undefined);
         });
     });
 

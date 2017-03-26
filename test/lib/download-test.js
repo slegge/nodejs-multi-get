@@ -33,9 +33,9 @@ var Main = require('../../lib/main');
 var Download = require('../../lib/download');
 
 describe('Download class', function() {
-	
-	context('Download class callbacks', function() {
-	    
+
+    context('Download class callbacks', function() {
+
         it('onRequestComplete callback with no error, no response', function() {
             var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
             var download = new Download(main);
@@ -79,6 +79,35 @@ describe('Download class', function() {
             var download = new Download(main);
 
             expect(function() {download.onAsyncComplete('error')}).to.throw(Error);
+        });
+    });
+
+    context('Functions', function() {
+
+        it('start with no error', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            var download = new Download(main);
+
+            var downloadPartStub = sinon.stub(download, 'downloadPart').callsFake(function() {});
+            var onAsyncCompleteStub = sinon.stub(download, 'onAsyncComplete').callsFake(function() {});
+
+            download.start();
+            expect(downloadPartStub.called).to.equal(true);
+            expect(onAsyncCompleteStub.called).to.equal(false);
+        });
+
+        it('start with error', function() {
+            var main = new Main({count: 4, url: 'http://test.com/url', destination: 'dest.out'});
+            var download = new Download(main);
+
+            var downloadPartStub = sinon.stub(download, 'downloadPart').callsFake(function(url, part, callback) {
+                callback('err');
+            });
+            var onAsyncCompleteStub = sinon.stub(download, 'onAsyncComplete').callsFake(function() {});
+
+            download.start();
+            expect(downloadPartStub.called).to.equal(true);
+            expect(onAsyncCompleteStub.called).to.equal(true);
         });
     });
 });

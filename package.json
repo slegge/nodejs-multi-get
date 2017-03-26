@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "async": "^2.1.5",
+    "concat-files": "^0.1.1",
     "fs": "0.0.1-security",
     "lodash": "^4.17.4",
     "request": "^2.81.0",
